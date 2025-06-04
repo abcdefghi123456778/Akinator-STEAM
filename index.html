@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akinator STEAM - Il Gioco delle Menti Brillanti</title>
+    <link rel="icon" type="image/png" href="lampada_logo.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url('sun-tornado.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #FotoGenio {
+            position: absolute;
+            top: 130px;
+            right: 50px;
+            width: 315px;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
+            transition: transform 0.3s ease;
+        }
+
+        #FotoFumetto{
+            position: absolute;
+            top: -60px;
+            right: 220px;
+            width: 400px;
+        }
+
+        .contenitore {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: 600px;
+            height: 525px;
+            background-color: #041234;
+            border-radius: 30px;
+            padding: 30px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 3px solid #fff;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .contenitore.game-mode {
+            width: 500px;
+            height: 250px;
+            top: 150px;
+            left: 100px;
+        }
+
+        .contenitore.result-mode {
+            height: 565px;
+            overflow: hidden;
+        }
+
+        .contenitore h1 {
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .contenitore.game-mode h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .contenitore p, .contenitore ul {
+            transition: all 0.3s ease;
+        }
+
+        .contenitore.game-mode p, 
+        .contenitore.game-mode ul,
+        .contenitore.result-mode p,
+        .contenitore.result-mode ul {
+            display: none;
+        }
+
+        .contenitore p {
+            color: #fff;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+        }
+
+        .contenitore ul {
+            color: #fff;
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .contenitore li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .contenitore b {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .inizio-bottone {
+            display: block;
+            margin: 20px auto 0;
+            padding: 12px 25px;
+            background-color: #FFD700;
+            color: #2c3e50;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .inizio-bottone:hover {
+            background-color: #ffea00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .testo-fumetto{
+            position: absolute;
+            top: 95px;
+            right: 220px;
+            width: 400px;
+            font-size: 15px;
+            color: black;
+            text-align: center;
+            text-shadow: 1px 1px 2px white;
+        }
+
+        .answer-buttons {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 15px;
+            position: relative;
+        }
+
+        .contenitore.result-mode .buttons-row {
+            display: flex;
+            gap: 170px;
+            position: relative;
+            left: 120px;
+        }
+
+        .answer-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .yes-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .yes-btn:hover {
+            background-color: #45a049;
+        }
+
+        .no-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .no-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .restart-btn {
+            padding: 12px 25px;
+            background-color: #FFD700;
+            color: #2c3e50;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        #restart-btn {
+            display: none;
+            margin: 5px auto 0;
+            position: relative;
+            top: -5px;
+        }
+
+        #restart-during-game {
+            display: none;
+            margin: 20px auto 0;
+        }
+
+        .result-content {
+            display: none;
+            color: white;
+            text-align: center;
+            padding-bottom: 5px;
+        }
+
+
+        .result-name {
+            font-size: 22px;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .character-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #FFD700;
+            margin: 0 auto 10px;
+            display: block;
+        }
+
+        .result-description {
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: left;
+            padding: 0 20px;
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .guess-confirmation {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .guess-question {
+            font-size: 16px;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+
+        .final-message {
+            font-size: 20px;
+            color: #FFD700;
+            margin: 10px 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        @media (min-width: 1921px) {
+            body {
+                transform: scale(0.9);
+                transform-origin: top left;
+                width: 111.11%;
+                height: 111.11vh;
+            }
+        }
+
+        @media (max-width: 1600px) {
+            body {
+                transform: scale(0.95);
+                transform-origin: top left;
+                width: 105.26%;
+                height: 105.26vh;
+            }
+        }
+
+        @media (max-width: 1366px) {
+            body {
+                transform: scale(0.85);
+                transform-origin: top left;
+                width: 117.65%;
+                height: 117.65vh;
+            }
+        }
+
+        @media (max-width: 1280px) {
+            body {
+                transform: scale(0.8);
+                transform-origin: top left;
+                width: 125%;
+                height: 125vh;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                transform: scale(0.7);
+                transform-origin: top left;
+                width: 142.86%;
+                height: 142.86vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                transform: scale(0.6);
+                transform-origin: top left;
+                width: 166.67%;
+                height: 166.67vh;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                transform: scale(0.5);
+                transform-origin: top left;
+                width: 200%;
+                height: 200vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                transform: scale(0.4);
+                transform-origin: top left;
+                width: 250%;
+                height: 250vh;
+            }
+        }
+
+        @keyframes zoomIn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+                
+        @keyframes zoomOut {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) and (max-height: 1000px) {
+            body {
+                transform: none !important;
+                width: 100% !important;
+                height: 100vh !important;
+                overflow: auto;
+            }
+            
+            .genio-container {
+                position: absolute;
+                top: 0%;
+                right: 40px;
+                display: flex;
+                justify-content: center;
+                z-index: 100;
+                pointer-events: none;
+            }
+            
+            #FotoGenio {
+                position: absolute;
+                right: 80%;
+                width: 120px;
+                height: auto;
+                transform: none !important;
+                transition: transform 0.3s ease;
+            }
+            
+            .genio-container.zoom-in #FotoGenio {
+                animation: zoomIn 0.3s ease;
+            }
+            
+            .genio-container.zoom-out #FotoGenio {
+                animation: zoomOut 0.3s ease;
+            }
+            
+            @keyframes zoomIn {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+
+            @keyframes zoomOut {
+                0% { transform: scale(1); }
+                50% { transform: scale(0.9); }
+                100% { transform: scale(1); }
+            }
+            
+            #FotoFumetto {
+                position: fixed;
+                top: 5%;
+                right: 80%;
+                transform: translateX(50%);
+                width: 100px;
+                height: auto;
+                z-index: 90;
+            }
+            
+            .testo-fumetto {
+                position: fixed;
+                top: 12%;
+                right: 50%;
+                transform: translateX(50%);
+                width: 180px;
+                font-size: 11px;
+                text-align: center;
+                z-index: 110;
+            }
+            
+            .contenitore {
+                position: relative;
+                top: 290px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 400px;
+                height: 230px;
+                max-height: 60vh;
+                overflow-y: auto;
+                margin-bottom: 10px;
+                padding: 15px;
+            }
+            
+            #answer-buttons {
+                position: relative;
+                z-index: 110;
+            }
+            
+            .contenitore.game-mode {
+                top: auto;
+                bottom: 5%;
+                left: 5%;
+                width: 90%;
+                height: 30vh;
+            }
+            
+            .contenitore.result-mode {
+                height: 40vh;
+                overflow-y: auto;
+            }
+            
+            .contenitore.result-mode .buttons-row {
+                gap: 20px !important;
+                left: 0 !important;
+                justify-content: center;
+            }
+            
+            .contenitore {
+                padding: 15px;
+            }
+            
+            .contenitore h1 {
+                font-size: 18px;
+            }
+            
+            .contenitore p, .contenitore li {
+                font-size: 14px;
+            }
+            
+            .answer-btn, .restart-btn, .inizio-bottone {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .contenitore ul {
+                padding-left: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                transform: none !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 100vh;
+                overflow-x: hidden;
+                padding-bottom: 20px;
+            }
+
+            #FotoGenio {
+                position: absolute;
+                top: 20px;
+                right: 30%;
+                transform: translateX(50%);
+                width: 180px;
+                height: auto;
+                z-index: 100;
+            }
+
+            #FotoFumetto {
+                position: absolute;
+                top: -40px;
+                right: 65%;
+                transform: translateX(50%);
+                width: 200px;
+                height: auto;
+                z-index: 90;
+            }
+
+            .testo-fumetto {
+                position: absolute;
+                top: 40px;
+                right: 65%;
+                transform: translateX(50%);
+                width: 180px;
+                font-size: 7.7px;
+                line-height: 1.3;
+                text-align: center;
+                z-index: 110;
+                white-space: normal;
+            }
+
+            .contenitore {
+                position: relative;
+                top: 300px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 400px;
+                height: 565px;
+                max-height: 55vh;
+                overflow-y: auto;
+                margin-bottom: 10px;
+                padding: 15px;
+            }
+
+            .contenitore h1 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+            .contenitore p {
+                font-size: 14px;
+                line-height: 1.4;
+                margin-bottom: 12px;
+            }
+
+            .contenitore ul {
+                padding-left: 15px;
+                margin-bottom: 15px;
+            }
+
+            .contenitore li {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+
+            .inizio-bottone, .answer-btn, .restart-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+                margin: 15px auto;
+            }
+
+            .contenitore.game-mode {
+                top: 300px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                height: auto;
+                min-height: 200px;
+            }
+
+            .contenitore.result-mode {
+                height: auto;
+                max-height: 55vh;
+            }
+
+            .result-description {
+                font-size: 13px;
+                padding: 0 10px;
+            }
+
+            .character-image {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .testo-fumetto {
+                font-size: 7.7px;
+                top: 38px;
+            }
+
+            .contenitore h1 {
+                font-size: 16px;
+            }
+
+            .contenitore p {
+                font-size: 13px;
+            }
+
+            .contenitore {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="genio-container">
+            <img src="genio.png" alt="Genio" id="FotoGenio">
+        </div>
+        <div class="contenitore">
+            <h1>Akinator STEAM - Il Gioco delle Menti Brillanti</h1>
+            <p>Pensa a un personaggio famoso nel mondo della scienza, della tecnologia, dell'ingegneria, dell'arte o della matematica... e lascia che il mio algoritmo intelligente scopra chi hai in mente!</p>
+            <p>Sei pronto a mettermi alla prova? Pensa a una mente geniale come:</p>
+            <ul>
+                <li><b>Leonardo da Vinci</b>, l'artista e inventore rinascimentale</li>
+                <li><b>Marie Curie</b>, pioniera della radioattività</li>
+                <li><b>Alan Turing</b>, padre dell'informatica</li>
+                <li><b>Katherine Johnson</b>, la matematica della NASA</li>
+                <li>o qualsiasi altro innovatore che ha cambiato il mondo STEAM</li>
+            </ul>
+            <p>Rispondi alle mie domande con "Sì" o "No" e vediamo se riesco a indovinare il tuo personaggio!</p>
+            <button class="inizio-bottone">INIZIA IL GIOCO</button>
+        
+        <div class="answer-buttons" id="answer-buttons">
+            <div class="buttons-row">
+                <button class="answer-btn yes-btn" id="yes-btn">Sì</button>
+                <button class="answer-btn no-btn" id="no-btn">No</button>
+            </div>
+            <button class="restart-btn" id="restart-during-game">RICOMINCIA</button>
+        </div>
+        
+        <div class="result-content" id="result-content">
+            <div class="result-name" id="result-name"></div>
+            <img id="character-image" class="character-image" src="" alt="Foto personaggio">
+            <div class="result-description" id="result-description"></div>
+            
+            <div class="guess-confirmation" id="guess-confirmation">
+                <div class="guess-question">Ho indovinato il personaggio?</div>
+                <div class="buttons-row">
+                    <button class="answer-btn yes-btn" id="confirm-yes-btn">Sì</button>
+                    <button class="answer-btn no-btn" id="confirm-no-btn">No</button>
+                </div>
+            </div>
+            <div class="final-message" id="final-message"></div>
+        </div>
+        <button class="restart-btn" id="restart-btn">RICOMINCIA</button>
+    </div>
+    <img src="ciao.png" alt="Fumetto" id="FotoFumetto">
+    <div class="testo-fumetto"><b>Pensi davvero di riuscire a nascondere <br>la tua mente brillante al mio genio?<br> Forza, stupiscimi... se ne sei capace!</b></div>
+
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            const characters = [
+                {
+                    id: 1,
+                    name: "Leonardo da Vinci",
+                    description: "Leonardo di ser Piero da Vinci (1452-1519) è stato un artista, scienziato e inventore italiano del Rinascimento. Considerato uno dei più grandi geni dell'umanità, è famoso per capolavori come la Gioconda e l'Ultima Cena, nonché per i suoi studi pionieristici sull'anatomia umana, il volo e molte altre discipline scientifiche.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leonardo_self.jpg/800px-Leonardo_self.jpg",
+                    traits: {
+                        artist: true,
+                        inventor: true,
+                        italian: true,
+                        historical: true,
+                        male: true,
+                        scientist: false,
+                        mathematician: false,
+                        engineer: false,
+                        modern: false,
+                        american: false,
+                        computerScientist: false,
+                        nobelPrize: false,
+                        female: false,
+                        spaceRelated: false,
+                        architect: true,
+                        renaissance: true
+                    }
+                },
+                {
+                    id: 2,
+                    name: "Marie Curie",
+                    description: "Marie Skłodowska Curie (1867-1934) è stata una fisica e chimica polacca naturalizzata francese. Fu la prima donna a vincere un Premio Nobel, l'unica donna a vincerne due e l'unica persona a vincerne in due diverse discipline scientifiche (fisica e chimica). I suoi pionieristici studi sulla radioattività hanno rivoluzionato la scienza moderna.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Marie_Curie_c._1920s.jpg/800px-Marie_Curie_c._1920s.jpg",
+                    traits: {
+                        scientist: true,
+                        nobelPrize: true,
+                        female: true,
+                        historical: true,
+                        physicist: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        male: false,
+                        mathematician: false,
+                        engineer: false,
+                        modern: false,
+                        american: false,
+                        computerScientist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 3,
+                    name: "Alan Turing",
+                    description: "Alan Mathison Turing (1912-1954) è stato un matematico, logico e crittografo britannico, considerato uno dei padri dell'informatica e dell'intelligenza artificiale. Durante la Seconda Guerra Mondiale, il suo lavoro sulla decrittazione del codice Enigma utilizzato dalla Germania nazista fu fondamentale per le sorti del conflitto.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Alan_Turing_Aged_16.jpg/800px-Alan_Turing_Aged_16.jpg",
+                    traits: {
+                        mathematician: true,
+                        computerScientist: true,
+                        male: true,
+                        historical: true,
+                        english: true,
+                        scientist: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        engineer: false,
+                        modern: true,
+                        american: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 4,
+                    name: "Katherine Johnson",
+                    description: "Katherine Johnson (1918-2020) è stata una matematica e fisica afroamericana il cui lavoro alla NASA fu fondamentale per il successo delle prime missioni spaziali con equipaggio, tra cui il volo di John Glenn nel 1962 e la missione Apollo 11 che portò l'uomo sulla Luna nel 1969. La sua storia è stata raccontata nel film 'Il diritto di contare'.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Katherine_Johnson_1983.jpg/800px-Katherine_Johnson_1983.jpg",
+                    traits: {
+                        mathematician: true,
+                        physicist: true,
+                        female: true,
+                        modern: true,
+                        american: true,
+                        scientist: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        historical: false,
+                        male: false,
+                        computerScientist: false,
+                        nobelPrize: false,
+                        engineer: false,
+                        spaceRelated: true,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 5,
+                    name: "Nikola Tesla",
+                    description: "Nikola Tesla (1856-1943) è stato un inventore, fisico e ingegnere elettrico serbo naturalizzato statunitense. Noto per il suo lavoro rivoluzionario nel campo dell'elettromagnetismo, è famoso per aver sviluppato il sistema a corrente alternata per la distribuzione dell'energia elettrica e per aver progettato la bobina di Tesla.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/N.Tesla.JPG/800px-N.Tesla.JPG",
+                    traits: {
+                        inventor: true,
+                        engineer: true,
+                        male: true,
+                        historical: true,
+                        scientist: true,
+                        physicist: true,
+                        american: true,
+                        modern: true,
+                        artist: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        computerScientist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 6,
+                    name: "Ada Lovelace",
+                    description: "Augusta Ada King, contessa di Lovelace (1815-1852), nota come Ada Lovelace, è stata una matematica inglese, nota soprattutto per il suo lavoro sulla macchina analitica ideata da Charles Babbage. I suoi appunti includono quello che è considerato il primo algoritmo inteso per essere elaborato da una macchina, facendo di lei la prima programmatrice di computer al mondo.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ada_Lovelace_portrait.jpg/800px-Ada_Lovelace_portrait.jpg",
+                    traits: {
+                        mathematician: true,
+                        computerScientist: true,
+                        female: true,
+                        historical: true,
+                        english: true,
+                        scientist: false,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        engineer: false,
+                        modern: false,
+                        american: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 7,
+                    name: "Steve Jobs",
+                    description: "Steven Paul Jobs (1955-2011) è stato un imprenditore, inventore e magnate statunitense nel settore dell'informatica. È stato il cofondatore di Apple Inc. e ne è considerato l'anima creativa. È noto per aver rivoluzionato diverse industrie tra cui quella dei computer, dell'animazione digitale, della musica, della telefonia e dell'editoria digitale.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/f/f5/Steve_Jobs_Headshot_2010-CROP2.jpg",
+                    traits: {
+                        inventor: true,
+                        computerScientist: true,
+                        male: true,
+                        modern: true,
+                        american: true,
+                        scientist: false,
+                        artist: true,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        engineer: false,
+                        historical: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 8,
+                    name: "Antoni Gaudí",
+                    description: "Antoni Gaudí i Cornet (1852-1926) è stato un architetto spagnolo, massimo esponente del modernismo catalano. Le sue opere sono caratterizzate da uno stile unico e individualista che si basa sull'osservazione della natura. La sua opera più famosa è la Sagrada Família a Barcellona, ancora in costruzione dopo più di un secolo.",
+                    image: "https://www.xpecialdesign.com.br/wp-content/uploads/2019/03/Antoni-Gaud-1-768x603.jpg",
+                    traits: {
+                        architect: true,
+                        artist: true,
+                        male: true,
+                        historical: true,
+                        modern: true,
+                        scientist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        engineer: false,
+                        computerScientist: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        american: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 9,
+                    name: "Albert Einstein",
+                    description: "Albert Einstein (1879-1955) è stato un fisico tedesco naturalizzato svizzero e statunitense. Sviluppò la teoria della relatività, uno dei due pilastri della fisica moderna insieme alla meccanica quantistica. Premio Nobel per la Fisica nel 1921 per i suoi contributi alla fisica teorica e in particolare per la scoperta dell'effetto fotoelettrico.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/800px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg",
+                    traits: {
+                        scientist: true,
+                        physicist: true,
+                        nobelPrize: true,
+                        male: true,
+                        historical: true,
+                        modern: true,
+                        american: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        female: false,
+                        mathematician: false,
+                        engineer: false,
+                        computerScientist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 10,
+                    name: "Grace Hopper",
+                    description: "Grace Brewster Hopper (1906-1992) è stata un'informatica e militare statunitense. Fu una delle prime programmatrici del computer Harvard Mark I e sviluppò il primo compilatore per un linguaggio di programmazione. È nota per aver coniato il termine 'bug' per indicare un malfunzionamento del computer e per aver contribuito allo sviluppo del linguaggio COBOL.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Commodore_Grace_M._Hopper%2C_USN_%28covered%29.jpg/800px-Commodore_Grace_M._Hopper%2C_USN_%28covered%29.jpg",
+                    traits: {
+                        computerScientist: true,
+                        female: true,
+                        modern: true,
+                        american: true,
+                        mathematician: true,
+                        scientist: true,
+                        artist: false,
+                        inventor: true,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        engineer: false,
+                        historical: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 11,
+                    name: "Galileo Galilei",
+                    description: "Galileo Galilei (1564-1642) è stato un fisico, astronomo, filosofo e matematico italiano, considerato il padre della scienza moderna. I suoi contributi includono il miglioramento del telescopio, sostanziali osservazioni astronomiche e la difesa del sistema eliocentrico copernicano. Il suo lavoro sperimentale segnò il passaggio dalla scienza aristotelica alla scienza moderna.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg/800px-Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg",
+                    traits: {
+                        scientist: true,
+                        physicist: true,
+                        mathematician: true,
+                        male: true,
+                        historical: true,
+                        italian: true,
+                        astronomer: true,
+                        artist: false,
+                        inventor: true,
+                        nobelPrize: false,
+                        female: false,
+                        engineer: false,
+                        modern: false,
+                        american: false,
+                        computerScientist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: true
+                    }
+                },
+                {
+                    id: 12,
+                    name: "Tim Berners-Lee",
+                    description: "Sir Timothy John Berners-Lee (nato nel 1955) è un informatico britannico, noto per essere l'inventore del World Wide Web. Nel 1989 propose un sistema di gestione delle informazioni che divenne il Web. Ha fondato il World Wide Web Consortium (W3C) e continua a lavorare per migliorare e proteggere il Web come direttore del W3C e della World Wide Web Foundation.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Sir_Tim_Berners-Lee.jpg/800px-Sir_Tim_Berners-Lee.jpg",
+                    traits: {
+                        computerScientist: true,
+                        inventor: true,
+                        male: true,
+                        modern: true,
+                        english: true,
+                        scientist: true,
+                        artist: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        engineer: false,
+                        historical: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 13,
+                    name: "Rosalind Franklin",
+                    description: "Rosalind Elsie Franklin (1920-1958) è stata una chimica e cristallografa britannica il cui lavoro fu fondamentale per la comprensione della struttura molecolare del DNA, dell'RNA, dei virus, del carbone e della grafite. Sebbene il suo contributo alla scoperta della struttura del DNA sia stato spesso sottovalutato, le sue immagini a raggi X furono cruciali per la determinazione della doppia elica.",
+                    image: "https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcTVD1raLZM7ufyLkpYm8WdFrq7gRcqg4ItiMLaUSxRM1BkuqaBG_zGsfm1DfZ9Ujxy9TQZHNCDBNPVE3pg",
+                    traits: {
+                        scientist: true,
+                        female: true,
+                        historical: true,
+                        english: true,
+                        chemist: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        mathematician: false,
+                        engineer: false,
+                        modern: false,
+                        american: false,
+                        computerScientist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 14,
+                    name: "Elon Musk",
+                    description: "Elon Reeve Musk (nato nel 1971) è un imprenditore, ingegnere e inventore sudafricano naturalizzato statunitense. Ha co-fondato PayPal, Tesla Motors, SpaceX, Neuralink e The Boring Company. È noto per la sua visione di colonizzare Marte, per la promozione dei veicoli elettrici e per i suoi ambiziosi progetti tecnologici che spaziano dall'energia solare all'intelligenza artificiale.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Elon_Musk_Royal_Society_%28crop2%29.jpg/800px-Elon_Musk_Royal_Society_%28crop2%29.jpg",
+                    traits: {
+                        inventor: true,
+                        engineer: true,
+                        male: true,
+                        modern: true,
+                        american: true,
+                        entrepreneur: true,
+                        artist: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        scientist: false,
+                        historical: false,
+                        physicist: false,
+                        computerScientist: false,
+                        spaceRelated: true,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 15,
+                    name: "Mae Jemison",
+                    description: "Mae Carol Jemison (nata nel 1956) è un'ingegnere, medico e ex astronauta NASA statunitense. È diventata la prima donna afroamericana a viaggiare nello spazio quando è salita a bordo dello Space Shuttle Endeavour nel 1992. Prima di entrare alla NASA, ha lavorato come medico e ha servito nel Corpo della Pace. Dopo la NASA, ha fondato una società di ricerca tecnologica.",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3hGogiZvzOJg10ehTlHehj4Fe84Yk7rm4UI87K3iGRrGbsyAZ1x5smFtiOP8TWb8VkwneJXcE07PVrfEbk-md7g",
+                    traits: {
+                        engineer: true,
+                        female: true,
+                        modern: true,
+                        american: true,
+                        spaceRelated: true,
+                        scientist: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        mathematician: false,
+                        historical: false,
+                        physicist: false,
+                        computerScientist: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 16,
+                    name: "Pablo Picasso",
+                    description: "Pablo Ruiz Picasso (1881-1973) è stato un pittore, scultore e artista spagnolo, considerato uno dei più influenti artisti del XX secolo. È noto per aver co-fondato il movimento cubista, per l'invenzione della scultura costruita e per la co-invenzione del collage. Tra le sue opere più famose ci sono 'Les Demoiselles d'Avignon' e 'Guernica'.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Pablo_picasso_1.jpg/800px-Pablo_picasso_1.jpg",
+                    traits: {
+                        artist: true,
+                        male: true,
+                        historical: true,
+                        spanish: true,
+                        modern: true,
+                        scientist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        engineer: false,
+                        computerScientist: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 17,
+                    name: "Archimede",
+                    description: "Archimede di Siracusa (287 a.C. circa - 212 a.C.) è stato un matematico, fisico e inventore greco antico. È considerato uno dei più grandi scienziati della classicità. Tra i suoi contributi ci sono il principio di Archimede, la spiegazione della leva, numerosi dispositivi meccanici e importanti lavori in geometria, tra cui il calcolo dell'area del cerchio e il volume della sfera.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Domenico-Fetti_Archimedes_1620.jpg/800px-Domenico-Fetti_Archimedes_1620.jpg",
+                    traits: {
+                        mathematician: true,
+                        physicist: true,
+                        inventor: true,
+                        male: true,
+                        historical: true,
+                        greek: true,
+                        scientist: true,
+                        artist: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        engineer: false,
+                        modern: false,
+                        american: false,
+                        computerScientist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 18,
+                    name: "Hedy Lamarr",
+                    description: "Hedy Lamarr (1914-2000), nata Hedwig Eva Maria Kiesler, è stata un'attrice e inventrice austriaca naturalizzata statunitense. Oltre alla sua carriera cinematografica, ha co-inventato una tecnica di modulazione per segnali radio a spettro espanso che è diventata la base per le moderne tecnologie wireless come Wi-Fi, Bluetooth e GPS. È stata inserita nella National Inventors Hall of Fame nel 2014.",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_0HBGasw-YlV-qZmd664WllnthyLtdHG7aE1oNrmbfCiUv6BIaApf4a1cWneJ1jTt4nrW5lMdw8pIyvGa_w7tdw",
+                    traits: {
+                        inventor: true,
+                        female: true,
+                        historical: true,
+                        american: true,
+                        artist: true,
+                        scientist: false,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        mathematician: false,
+                        engineer: false,
+                        modern: false,
+                        computerScientist: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 19,
+                    name: "Stephen Hawking",
+                    description: "Stephen William Hawking (1942-2018) è stato un fisico teorico, cosmologo e divulgatore scientifico britannico. Nonostante la malattia del motoneurone che lo ha progressivamente paralizzato, ha dato contributi fondamentali alla fisica, in particolare nello studio dei buchi neri e della cosmologia quantistica. La sua opera più nota è 'Dal big bang ai buchi neri. Breve storia del tempo'.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Stephen_Hawking.StarChild.jpg/800px-Stephen_Hawking.StarChild.jpg",
+                    traits: {
+                        scientist: true,
+                        physicist: true,
+                        male: true,
+                        historical: true,
+                        english: true,
+                        modern: true,
+                        mathematician: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        engineer: false,
+                        computerScientist: false,
+                        spaceRelated: true,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 20,
+                    name: "Zaha Hadid",
+                    description: "Zaha Hadid (1950-2016) è stata un'architetta e designer irachena naturalizzata britannica, figura di spicco dell'architettura contemporanea. È stata la prima donna a ricevere il Premio Pritzker per l'architettura nel 2004. Le sue opere sono caratterizzate da forme dinamiche e fluide, tra cui il MAXXI di Roma, il London Aquatics Centre e l'Heydar Aliyev Center di Baku.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Zaha_Hadid_in_Heydar_Aliyev_Cultural_center_in_Baku_nov_2013.jpg/1200px-Zaha_Hadid_in_Heydar_Aliyev_Cultural_center_in_Baku_nov_2013.jpg",
+                    traits: {
+                        architect: true,
+                        female: true,
+                        modern: true,
+                        english: true,
+                        artist: true,
+                        scientist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        mathematician: false,
+                        engineer: false,
+                        historical: false,
+                        physicist: false,
+                        computerScientist: false,
+                        spaceRelated: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 21,
+                    name: "Linus Torvalds",
+                    description: "Linus Benedict Torvalds (nato nel 1969) è un ingegnere del software finlandese-americano, noto per aver creato il kernel Linux, che è alla base di molti sistemi operativi open source, e per aver sviluppato Git, il sistema di controllo versione ampiamente utilizzato nello sviluppo software. È una figura chiave nel movimento del software libero e open source.",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/LinuxCon_Europe_Linus_Torvalds_03_%28cropped%29.jpg/800px-LinuxCon_Europe_Linus_Torvalds_03_%28cropped%29.jpg",
+                    traits: {
+                        computerScientist: true,
+                        male: true,
+                        modern: true,
+                        american: true,
+                        engineer: true,
+                        scientist: false,
+                        artist: false,
+                        inventor: true,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        historical: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 22,
+                    name: "Rachel Carson",
+                    description: "Rachel Louise Carson (1907-1964) è stata una biologa marina e ambientalista statunitense il cui libro 'Primavera silenziosa' (1962) è considerato fondamentale per il movimento ambientalista moderno. Il suo lavoro ha portato a cambiamenti nella legislazione sui pesticidi e ha ispirato la creazione dell'Environmental Protection Agency (EPA) negli Stati Uniti.",
+                    image: "https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcTiCFVnygeJytakf90rLUbLaddcfjWySQN0cQBwC1Gorvi4BXSKKHxEd9E97hxDxe6Httq531vS2DOQtJJ6gDLWClVGNVnl-2vfEj_s93AWetWeRLbHol-viHeVf9X_M8qkOp7wvD_e",
+                    traits: {
+                        scientist: true,
+                        female: true,
+                        historical: true,
+                        american: true,
+                        biologist: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        mathematician: false,
+                        engineer: false,
+                        modern: false,
+                        computerScientist: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 23,
+                    name: "Filippo Brunelleschi",
+                    description: "Filippo Brunelleschi (1377-1446) è stato un architetto, ingegnere, scultore e orafo italiano del Rinascimento. È considerato uno dei padri dell'architettura rinascimentale e famoso per aver progettato e costruito la cupola del Duomo di Firenze, un'impresa ingegneristica rivoluzionaria per l'epoca. Introdusse la prospettiva lineare nell'arte.",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXGqK1J44_AOg4sZxq9clwkXwPGE3UNa1Hmg&s",
+                    traits: {
+                        architect: true,
+                        male: true,
+                        historical: true,
+                        italian: true,
+                        engineer: true,
+                        artist: true,
+                        scientist: false,
+                        inventor: true,
+                        nobelPrize: false,
+                        female: false,
+                        mathematician: false,
+                        modern: false,
+                        american: false,
+                        computerScientist: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        renaissance: true
+                    }
+                },
+                {
+                    id: 24,
+                    name: "Seymour Papert",
+                    description: "Seymour Aubrey Papert (1928-2016) è stato un matematico, informatico ed educatore sudafricano-americano, pioniere dell'intelligenza artificiale e dell'uso delle tecnologie nell'educazione. Ha co-fondato il MIT Media Lab ed è noto per aver creato il linguaggio di programmazione Logo e per il suo lavoro sulla teoria del costruzionismo nell'apprendimento.",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyml1fLgXNcgS5z0mM9UNuZpCoTYIeSUqxGw&s",
+                    traits: {
+                        computerScientist: true,
+                        male: true,
+                        modern: true,
+                        american: true,
+                        mathematician: true,
+                        scientist: true,
+                        artist: false,
+                        inventor: true,
+                        italian: false,
+                        nobelPrize: false,
+                        female: false,
+                        engineer: false,
+                        historical: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                },
+                {
+                    id: 25,
+                    name: "Hypatia",
+                    description: "Hypatia (350/370-415 d.C.) è stata una matematica, astronoma e filosofa greca che visse ad Alessandria d'Egitto. È considerata la prima matematica donna della storia di cui abbiamo una conoscenza dettagliata. Insegnò filosofia e astronomia e contribuì all'edizione dell'Almagesto di Tolomeo. La sua morte violenta per mano di una folla cristiana la rese un simbolo del conflitto tra scienza e fanatismo religioso.",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSss-KKCEBS_9YEoJoPb3pnLbdajxE4bV3lJg&s",
+                    traits: {
+                        mathematician: true,
+                        female: true,
+                        historical: true,
+                        astronomer: true,
+                        philosopher: true,
+                        scientist: true,
+                        artist: false,
+                        inventor: false,
+                        italian: false,
+                        nobelPrize: false,
+                        male: false,
+                        engineer: false,
+                        modern: false,
+                        american: false,
+                        computerScientist: false,
+                        physicist: false,
+                        spaceRelated: false,
+                        architect: false,
+                        renaissance: false
+                    }
+                }
+            ];
+
+            const questions = [
+                {
+                    text: "Il personaggio che hai<br> in mente è un artista?",
+                    trait: "artist"
+                },
+                {
+                    text: "Il personaggio è un inventore o<br> ha creato tecnologie innovative?",
+                    trait: "inventor"
+                },
+                {
+                    text: "Il personaggio è italiano?",
+                    trait: "italian"
+                },
+                {
+                    text: "Il personaggio è vissuto in <br>epoca storica (prima del 1900)?",
+                    trait: "historical"
+                },
+                {
+                    text: "Il personaggio è di sesso maschile?",
+                    trait: "male"
+                },
+                {
+                    text: "Il personaggio è uno scienziato?",
+                    trait: "scientist"
+                },
+                {
+                    text: "Il personaggio ha vinto<br> un premio Nobel?",
+                    trait: "nobelPrize"
+                },
+                {
+                    text: "Il personaggio è di sesso femminile?",
+                    trait: "female"
+                },
+                {
+                    text: "Il personaggio ha lavorato<br> nel campo dell'architettura?",
+                    trait: "architect"
+                },
+                {
+                    text: "Il personaggio ha contribuito<br> alla conquista dello spazio?",
+                    trait: "spaceRelated"
+                },
+                {
+                    text: "Il personaggio è vissuto<br> nel periodo rinascimentale?",
+                    trait: "renaissance"
+                },
+                {
+                    text: "Il personaggio è principalmente<br> un matematico?",
+                    trait: "mathematician"
+                },
+                {
+                    text: "Il personaggio è un fisico?",
+                    trait: "physicist"
+                },
+                {
+                    text: "Il personaggio è un informatico?",
+                    trait: "computerScientist"
+                },
+                {
+                    text: "Il personaggio è un ingegnere?",
+                    trait: "engineer"
+                },
+                {
+                    text: "Il personaggio è americano?",
+                    trait: "american"
+                },
+                {
+                    text: "Il personaggio è inglese?",
+                    trait: "english"
+                },
+                {
+                    text: "Il personaggio è vissuto<br> in epoca moderna (dopo il 1900)?",
+                    trait: "modern"
+                }
+            ];
+
+            let currentQuestionIndex = 0;
+            let possibleCharacters = [...characters];
+            let userAnswers = {};
+            let confidenceLevel = 0;
+            let questionDelay = 800;
+            let isGuessing = false;
+            let gameActive = false;
+            let askedQuestions = new Set();
+
+            const startBtn = document.querySelector('.inizio-bottone');
+            const container = document.querySelector('.contenitore');
+            const bubbleText = document.querySelector('.testo-fumetto');
+            const genioImg = document.getElementById('FotoGenio');
+            const answerButtons = document.getElementById('answer-buttons');
+            const yesBtn = document.getElementById('yes-btn');
+            const noBtn = document.getElementById('no-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const restartDuringGameBtn = document.getElementById('restart-during-game');
+            const resultContent = document.getElementById('result-content');
+            const resultName = document.getElementById('result-name');
+            const resultDescription = document.getElementById('result-description');
+            const characterImage = document.getElementById('character-image');
+            const guessConfirmation = document.getElementById('guess-confirmation');
+            const confirmYesBtn = document.getElementById('confirm-yes-btn');
+            const confirmNoBtn = document.getElementById('confirm-no-btn');
+            const finalMessage = document.getElementById('final-message');
+
+            function initGame() {
+                yesBtn.addEventListener('click', () => {
+                    const genioContainer = document.querySelector('.genio-container');
+                    genioContainer.classList.add('zoom-in');
+                    setTimeout(() => genioContainer.classList.remove('zoom-in'), 500);
+                });
+
+                noBtn.addEventListener('click', () => {
+                    const genioContainer = document.querySelector('.genio-container');
+                    genioContainer.classList.add('zoom-out');
+                    setTimeout(() => genioContainer.classList.remove('zoom-out'), 500);
+                });
+                startBtn.addEventListener('click', startGame);
+                yesBtn.addEventListener('click', () => handleAnswer(true));
+                noBtn.addEventListener('click', () => handleAnswer(false));
+                restartBtn.addEventListener('click', restartGame);
+                restartDuringGameBtn.addEventListener('click', restartGame);
+                confirmYesBtn.addEventListener('click', () => handleGuessConfirmation(true));
+                confirmNoBtn.addEventListener('click', () => handleGuessConfirmation(false));
+            }
+            
+            function updateButtonsRowStyle() {
+                const buttonsRows = document.querySelectorAll('.buttons-row');
+                buttonsRows.forEach(row => {
+                    if (container.classList.contains('result-mode')) {
+                        row.style.gap = '170px';
+                        row.style.left = '120px';
+                    } else {
+                        row.style.gap = '15px';
+                        row.style.left = '';
+                    }
+                });
+            }
+
+            function startGame() {
+                if (gameActive) return;
+                gameActive = true;
+                
+                container.classList.add('game-mode');
+                startBtn.style.display = 'none';
+                answerButtons.style.display = 'flex';
+                restartDuringGameBtn.style.display = 'block';
+                restartBtn.style.display = 'none';
+                resultContent.style.display = 'none';
+                guessConfirmation.style.display = 'none';
+                finalMessage.style.display = 'none';
+                
+                document.querySelectorAll('.contenitore p, .contenitore ul').forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                genioImg.src = 'genio_perplesso.png';
+                genioImg.alt = 'Genio pensieroso';
+                bubbleText.innerHTML = '<b>Sto analizzando la tua mente brillante...</b>';
+                
+                currentQuestionIndex = 0;
+                possibleCharacters = [...characters];
+                userAnswers = {};
+                confidenceLevel = 0;
+                isGuessing = false;
+                askedQuestions = new Set();
+                
+                setTimeout(askQuestion, 1000);
+            }
+
+            function askQuestion() {
+                if (!gameActive || isGuessing) return;
+
+                let nextQuestionIndex = -1;
+                for (let i = 0; i < questions.length; i++) {
+                    if (!askedQuestions.has(i)) {
+                        nextQuestionIndex = i;
+                        break;
+                    }
+                }
+
+                if (nextQuestionIndex === -1) {
+                    if (possibleCharacters.length > 0) {
+                        makeGuess();
+                    } else {
+                        endGameWithoutGuess();
+                    }
+                    return;
+                }
+
+                currentQuestionIndex = nextQuestionIndex;
+                askedQuestions.add(currentQuestionIndex);
+                const question = questions[currentQuestionIndex];
+                bubbleText.innerHTML = `<b>${question.text}</b>`;
+                
+                if (!genioImg.src.includes('genio_triste')) {
+                    updateGenioExpression();
+                }
+            }
+
+            function shouldMakeGuess() {
+                if (possibleCharacters.length === 0) return false;
+                
+                if (Object.keys(userAnswers).length < 5) return false;
+                
+                const bestMatch = possibleCharacters.reduce((prev, current) => 
+                    countMatches(prev) > countMatches(current) ? prev : current
+                );
+                
+                const matchPercentage = countMatches(bestMatch) / Object.keys(userAnswers).length;
+                
+                return (matchPercentage > 0.85 && possibleCharacters.length <= 3) || possibleCharacters.length === 1;
+            }
+
+            function handleAnswer(answer) {
+                if (!gameActive || isGuessing) return;
+
+                const currentQuestion = questions[currentQuestionIndex];
+                userAnswers[currentQuestion.trait] = answer;
+                
+                genioImg.style.transform = answer ? 'scale(1.05)' : 'scale(0.95)';
+                
+                answerButtons.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    if (!gameActive) return;
+                    
+                    genioImg.style.transform = '';
+                    
+                    const previousCount = possibleCharacters.length;
+                    possibleCharacters = possibleCharacters.filter(character => {
+                        return character.traits[currentQuestion.trait] === answer;
+                    });
+                    
+                    if (previousCount > 0) {
+                        const reduction = ((previousCount - possibleCharacters.length) / previousCount) * 100;
+                        confidenceLevel = Math.min(confidenceLevel + (reduction * (0.5 + Math.random() * 0.3)), 100);
+                    }
+                    
+                    if (Object.keys(userAnswers).length >= 5 && shouldMakeGuess()) {
+                        makeGuess();
+                    } else {
+                        updateGenioExpression();
+                        answerButtons.style.pointerEvents = 'auto';
+                        setTimeout(askQuestion, questionDelay + Math.random() * 500);
+                    }
+                    
+                }, 300);
+            }
+
+            function makeGuess() {
+                if (!gameActive) return;
+                
+                isGuessing = true;
+                gameActive = false;
+                
+                possibleCharacters.sort((a, b) => countMatches(b) - countMatches(a));
+                const guessedCharacter = possibleCharacters[0];
+                
+                container.classList.remove('game-mode');
+                container.classList.add('result-mode');
+                answerButtons.style.display = 'none';
+                restartDuringGameBtn.style.display = 'none';
+                resultContent.style.display = 'block';
+                guessConfirmation.style.display = 'block';
+                finalMessage.style.display = 'none';
+                restartBtn.style.display = 'block';
+                
+                resultName.textContent = guessedCharacter.name;
+                resultDescription.textContent = guessedCharacter.description;
+                characterImage.src = guessedCharacter.image;
+                characterImage.alt = guessedCharacter.name;
+                
+                genioImg.src = 'genio_sicuro.png';
+                genioImg.alt = 'Genio che fa una supposizione';
+                bubbleText.innerHTML = `<b>Credo di aver capito!<br>Il personaggio che hai pensato è:<br>${guessedCharacter.name}</b>`;
+                
+                updateButtonsRowStyle();
+            }
+
+            function handleGuessConfirmation(isCorrect) {
+                if (isCorrect) {
+                    guessConfirmation.style.display = 'none';
+                    finalMessage.style.display = 'block';
+                    finalMessage.textContent = "HAHA! Lo sapevo! Non c'è mente brillante che possa sfuggire al mio genio! Sei stato troppo prevedibile!";
+                    
+                    genioImg.src = 'genio_sicuro.png';
+                    genioImg.alt = 'Genio trionfante';
+                    bubbleText.innerHTML = '<b>Nessuno può battere il mio <br> intelletto superiore!<br>La tua sconfitta era inevitabile!</b>';
+                } else {
+                    const remainingQuestions = questions.filter((_, index) => !askedQuestions.has(index));
+                    
+                    if (remainingQuestions.length > 0 && possibleCharacters.length > 0) {
+                        genioImg.src = 'genio_perplesso.png';
+                        genioImg.alt = 'Genio pensieroso';
+                        bubbleText.innerHTML = '<b>Interessante... fammi pensare meglio!</b>';
+                        
+                        isGuessing = false;
+                        gameActive = true;
+                        container.classList.remove('result-mode');
+                        container.classList.add('game-mode');
+                        resultContent.style.display = 'none';
+                        answerButtons.style.display = 'flex';
+                        restartDuringGameBtn.style.display = 'block';
+                        restartBtn.style.display = 'none';
+                        
+                        answerButtons.style.pointerEvents = 'auto';
+                        
+                        setTimeout(askQuestion, 1000);
+                    } else {
+                        genioImg.src = 'genio_triste.png';
+                        genioImg.alt = 'Genio deluso';
+                        bubbleText.innerHTML = '<b>Oh no... mi sono sbagliato?<br>Dammi un altro tentativo!</b>';
+                        
+                        gameActive = false;
+                        container.classList.remove('game-mode');
+                        container.classList.add('result-mode');
+                        answerButtons.style.display = 'none';
+                        restartDuringGameBtn.style.display = 'none';
+                        resultContent.style.display = 'block';
+                        guessConfirmation.style.display = 'none';
+                        finalMessage.style.display = 'block';
+                        restartBtn.style.display = 'block';
+                        
+                        finalMessage.textContent = "Accidenti! Non sono riuscito a indovinare il tuo personaggio. Complimenti, hai battuto il mio algoritmo! Ma la prossima volta non sarai così fortunato!";
+                        
+                        resultName.textContent = "Personaggio sconosciuto";
+                        resultDescription.textContent = "Il mio algoritmo non è riuscito a determinare il personaggio a cui stavi pensando. Complimenti per avermi battuto!";
+                        characterImage.src = 'punto_interrogativo.png';
+                        characterImage.alt = 'Personaggio sconosciuto';
+                    }
+                }
+                
+                updateButtonsRowStyle();
+            }
+
+            function endGameWithoutGuess() {
+                gameActive = false;
+                container.classList.remove('game-mode');
+                container.classList.add('result-mode');
+                answerButtons.style.display = 'none';
+                restartDuringGameBtn.style.display = 'none';
+                resultContent.style.display = 'block';
+                guessConfirmation.style.display = 'none';
+                finalMessage.style.display = 'block';
+                restartBtn.style.display = 'block';
+                
+                finalMessage.textContent = "Accidenti! Non sono riuscito a indovinare il tuo personaggio. Complimenti, hai battuto il mio algoritmo! Ma la prossima volta non sarai così fortunato!";
+                
+                resultName.textContent = "Personaggio sconosciuto";
+                resultDescription.textContent = "Il mio algoritmo non è riuscito a determinare il personaggio a cui stavi pensando. Complimenti per avermi battuto!";
+                
+                characterImage.src = 'punto_interrogativo.png';
+                characterImage.alt = 'Personaggio sconosciuto';
+                
+                genioImg.src = 'genio_triste.png';
+                genioImg.alt = 'Genio deluso';
+                bubbleText.innerHTML = '<b>Non è possibile!<br>Devo ammettere che questa volta<br>hai vinto tu!</b>';
+                
+                updateButtonsRowStyle();
+            }
+
+            function countMatches(character) {
+                let matches = 0;
+                for (const trait in userAnswers) {
+                    if (character.traits[trait] === userAnswers[trait]) {
+                        matches++;
+                    }
+                }
+                return matches;
+            }
+
+            function updateGenioExpression() {
+                if (!gameActive) return;
+                
+                if (shouldMakeGuess()) {
+                    genioImg.src = 'genio_sicuro.png';
+                    genioImg.alt = 'Genio sicuro';
+                } else {
+                    genioImg.src = 'genio_perplesso.png';
+                    genioImg.alt = 'Genio pensieroso';
+                }
+            }
+
+            function restartGame() {
+                gameActive = false;
+                container.classList.remove('game-mode', 'result-mode');
+                startBtn.style.display = 'block';
+                answerButtons.style.display = 'none';
+                restartDuringGameBtn.style.display = 'none';
+                resultContent.style.display = 'none';
+                restartBtn.style.display = 'none';
+                
+                document.querySelectorAll('.contenitore p, .contenitore ul').forEach(el => {
+                    el.style.display = 'block';
+                });
+                document.querySelector('.contenitore h1').style.display = 'block';
+                
+                currentQuestionIndex = 0;
+                possibleCharacters = [...characters];
+                userAnswers = {};
+                confidenceLevel = 0;
+                isGuessing = false;
+                askedQuestions = new Set();
+                
+                genioImg.src = 'genio.png';
+                genioImg.alt = 'Genio';
+                bubbleText.innerHTML = '<b>Pensi davvero di riuscire a nascondere <br>la tua mente brillante al mio genio?<br> Forza, stupiscimi... se ne sei capace!</b>';
+                
+                answerButtons.style.pointerEvents = 'auto';
+                
+                updateButtonsRowStyle();
+            }
+            initGame();
+        });
+    </script>
+</body>
+</html>
